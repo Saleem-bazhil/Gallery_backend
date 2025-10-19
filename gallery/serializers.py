@@ -7,7 +7,7 @@ class PhotoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Photo
         fields = ['id', 'name', 'img','image', 'category', 'date', 'is_favorite']
-        read_only_fields = ['date']
+        read_only_fields = ['date','image']
 
     def get_image(self, obj):
         request = self.context.get('request')
