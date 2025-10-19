@@ -12,6 +12,9 @@ class PhotoViewSet(viewsets.ModelViewSet):
     serializer_class = PhotoSerializer
     permission_classes = [AllowAny]
     
+    def get_serializer_context(self):
+        return {'request': self.request}
+    
 class ToggleFavoriteView(APIView):
     permission_classes = [AllowAny]
 

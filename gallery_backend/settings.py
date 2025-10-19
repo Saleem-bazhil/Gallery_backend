@@ -151,13 +151,15 @@ REST_FRAMEWORK = {
 }
 
 CORS_ALLOWED_ORIGINS = [
-    "https://gallery-frontend-navy-two.vercel.app"  
+    "https://gallery-frontend-navy-two.vercel.app",
+    "http://localhost:5173",
 ]
 
 CORS_ALLOW_CREDENTIALS = True
 
 CSRF_TRUSTED_ORIGINS = [
     "https://gallery-frontend-navy-two.vercel.app", 
+    "http://localhost:5173",
 ]
 
 if 'RENDER_EXTERNAL_HOSTNAME' in os.environ:
