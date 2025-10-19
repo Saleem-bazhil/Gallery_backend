@@ -1,1 +1,1 @@
-web: gunicorn gallery_backend.wsgi
+web: gunicorn --bind 0.0.0.0:$PORT gallery_backend.wsgi:application

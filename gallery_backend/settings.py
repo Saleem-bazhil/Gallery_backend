@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+import os
+import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,21 +22,18 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-!kul)+b@l538e_$jb2oei9jbu6e@@%&usrfxk!+qhdv-!r1$@*'
+SECRET_KEY = os.environ.get('SECRET_KEY', 'some-fallback-key-for-local-development') 
+# **<-- MODIFIED: Reads SECRET_KEY from environment**
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG=False
+# Set DEBUG=True only for local dev. Must be False in production.
+DEBUG = os.environ.get('DEBUG', 'False') == 'True' 
+# **<-- MODIFIED: Reads DEBUG from environment**
 
-
-
-ALLOWED_HOSTS = [
-    "web-production-5f5c5.up.railway.app",
-    "localhost",
-    "127.0.0.1"
-]
-
-
-
+# ALLOWED_HOSTS must include your Railway domain (e.g., .up.railway.app)
+# Load a comma-separated list from environment variable.
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '127.0.0.1,localhost').split(',') 
+# **<-- MODIFIED: Reads ALLOWED_HOSTS from environment**
 
 # Application definition
 
@@ -53,9 +52,9 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',  
+    'django.middleware.security.SecurityMiddleware', 
+    'whitenoise.middleware.WhiteNoiseMiddleware', 
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -89,10 +88,12 @@ WSGI_APPLICATION = 'gallery_backend.wsgi.application'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    'default': dj_database_url.config(
+        # Fallback to SQLite for local development if DATABASE_URL is not set
+        default='sqlite:///db.sqlite3', 
+        conn_max_age=600,
+        conn_health_checks=True, # **<-- ADDED: Recommended connection settings**
+    )
 }
 
 
@@ -149,7 +150,12 @@ CORS_ALLOWED_ORIGINS = [
     "https://gallery-frontend-navy-two.vercel.app"  
 ]
 
-CORS_ALLOW_CREDENTIALS = True  
+CORS_ALLOW_CREDENTIALS = True
+
+CSRF_TRUSTED_ORIGINS = [ # **<-- NEW SETTING**
+    "https://gallery-frontend-navy-two.vercel.app",
+    # Add your Railway domain here, e.g., "https://*.up.railway.app"
+]
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
