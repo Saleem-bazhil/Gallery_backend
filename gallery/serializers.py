@@ -2,11 +2,11 @@ from rest_framework import serializers
 from .models import Photo
 
 class PhotoSerializer(serializers.ModelSerializer):
-    image = serializers.SerializerMethodField()
+    image = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Photo
-        fields = ['id', 'name', 'image', 'category', 'date', 'is_favorite']
+        fields = ['id', 'name', 'img','image', 'category', 'date', 'is_favorite']
         read_only_fields = ['date']
 
     def get_image(self, obj):
