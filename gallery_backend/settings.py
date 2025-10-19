@@ -32,7 +32,12 @@ DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
 # ALLOWED_HOSTS must include your Railway domain (e.g., .up.railway.app)
 # Load a comma-separated list from environment variable.
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '127.0.0.1,localhost').split(',') 
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '127.0.0.1,localhost').split(',')
+
+# --- ADD THIS BLOCK ---
+if 'RENDER_EXTERNAL_HOSTNAME' in os.environ:
+    # Append the Render external URL to ALLOWED_HOSTS
+    ALLOWED_HOSTS.append(os.environ['RENDER_EXTERNAL_HOSTNAME'])
 # **<-- MODIFIED: Reads ALLOWED_HOSTS from environment**
 
 # Application definition
@@ -55,7 +60,6 @@ MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',  
     'django.middleware.security.SecurityMiddleware', 
     'whitenoise.middleware.WhiteNoiseMiddleware', 
-    'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -152,10 +156,12 @@ CORS_ALLOWED_ORIGINS = [
 
 CORS_ALLOW_CREDENTIALS = True
 
-CSRF_TRUSTED_ORIGINS = [ # **<-- NEW SETTING**
-    "https://gallery-frontend-navy-two.vercel.app",
-    # Add your Railway domain here, e.g., "https://*.up.railway.app"
+CSRF_TRUSTED_ORIGINS = [
+    "https://gallery-frontend-navy-two.vercel.app", 
 ]
+
+if 'RENDER_EXTERNAL_HOSTNAME' in os.environ:
+    CSRF_TRUSTED_ORIGINS.append('https://' + os.environ['RENDER_EXTERNAL_HOSTNAME'])
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
