@@ -25,7 +25,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('SECRET_KEY', 'some-fallback-key-for-local-development') 
 # **<-- MODIFIED: Reads SECRET_KEY from environment**
 
-# SECURITY WARNING: don't run with debug turned on in production!
+# SECURITY WARNING: don't run with debug turned on in production!   
 # Set DEBUG=True only for local dev. Must be False in production.
 DEBUG = os.environ.get('DEBUG', 'False') == 'True' 
 # **<-- MODIFIED: Reads DEBUG from environment**
